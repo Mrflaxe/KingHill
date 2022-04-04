@@ -11,8 +11,14 @@ commands:
     aliases: [kh]
     usage: /kinghill
     default: op
+  cancel:
+    usage: /cancel
+    default: op
 
 permissions:
   kinghill.command.create:
     description: allows to create new kinghills
+    default: op
+  kinghil.command.cancel:
+    description: cancelling kinghill creation
     default: op

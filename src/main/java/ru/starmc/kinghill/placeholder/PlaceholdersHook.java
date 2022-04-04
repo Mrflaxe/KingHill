@@ -21,8 +21,9 @@ public class PlaceholdersHook extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String params) {
         for(int i = 1; i < 6; i++) {
             String allTimePlacePlaceholder = "%kh_time_top" + i + "%";
-            String namePlcaeholder = "%kh_name_top" + i + "%";
+            String allTimeNamePlcaeholder = "%kh_name_top" + i + "%";
             String maxTimePlaceholder = "%kh_maxtime_top" + i + "%";
+            String maxTimeNamePlaceholder = "%kh_maxname_top" + i + "%";
 
             List<ProfileModel> top5AllTime = profileProvider.getTop5Profiles(true);
             List<ProfileModel> top5MaxTime = profileProvider.getTop5Profiles(false);
@@ -47,8 +48,13 @@ public class PlaceholdersHook extends PlaceholderExpansion {
                 return formatter.format(time, pattern);
             }
             
-            if(params.equalsIgnoreCase(namePlcaeholder)) {
+            if(params.equalsIgnoreCase(allTimeNamePlcaeholder)) {
                 ProfileModel profile = top5AllTime.get(i);
+                return profile.getName();
+            }
+            
+            if(params.equalsIgnoreCase(maxTimeNamePlaceholder)) {
+                ProfileModel profile = top5MaxTime.get(i);
                 return profile.getName();
             }
         }

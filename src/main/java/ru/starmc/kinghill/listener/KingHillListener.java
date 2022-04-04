@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,6 +37,7 @@ public class KingHillListener implements Listener {
         register();
     }
     
+    @EventHandler
     public void onPressurePlateActivate(PlayerInteractEvent event) {
         if(event.getAction() != Action.PHYSICAL) {
             return;
@@ -67,15 +70,31 @@ public class KingHillListener implements Listener {
                 .filter(onlinePlayer -> hill.isInRange(onlinePlayer.getLocation()))
                 .collect(Collectors.toList());
 
-        int required = config.getInt("required-players");
+        int required = config.getInt("players-required");
         
         // and sending a message if players are not enought
         if(playersIn.size() < required) {
-            messages.sendFormatted(player, "kinghill.not-enough-players", "%count%", required);
+            String formatted = messages.getFormatted("kinghill.not-enough-players", "%count%", required);
+            player.sendActionBar(formatted);
             return;
         }
         
         timeCounter.runCounter(player, hill);
+    }
+    
+    @EventHandler
+    public void onKingHillBreake(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        HillModel hill = hillProvider.getHill(block.getLocation());
+        
+        if(hill == null) {
+            return;
+        }
+        
+        Player player = event.getPlayer();
+        hillProvider.deleteHill(hill);
+        
+        messages.sendFormatted(player, "delete", "%name%", hill.getName());
     }
     
     private void register() {

@@ -32,7 +32,7 @@ public class SubcommandCreate extends OmnipotentSubcommand {
     protected void executeCommand(@NotNull CommandSender sender, @NotNull CommandArguments args) {
         String hillId = args.get(0);
         
-        if(hillProvider.isExist(hillId)) {
+        if(!hillProvider.isExist(hillId)) {
             messages.sendFormatted(sender, "creation.error.already-exist", "%name%", hillId);
             return;
         }

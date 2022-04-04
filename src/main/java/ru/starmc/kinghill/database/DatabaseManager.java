@@ -70,9 +70,12 @@ public class DatabaseManager extends AbstractQuietExecutor {
     
     public CompletableFuture<HillModel> getHillByTop(Location location) {
         return supplyQuietlyAsync(() -> hillDao.queryBuilder().where()
-                .eq("plate_x", location.getBlockX())
-                .eq("plate_y", location.getBlockY())
-                .eq("plate_z", location.getBlockZ())
-                .queryForFirst());
+                .eq("plate_x", location.getBlockX()).and()
+                .eq("plate_y", location.getBlockY()).and()
+                .eq("plate_z", location.getBlockZ()).queryForFirst());
+    }
+    
+    public CompletableFuture<Void> deleteHill(HillModel hill) {
+        return runQuietlyAsync(() -> hillDao.delete(hill));
     }
 }

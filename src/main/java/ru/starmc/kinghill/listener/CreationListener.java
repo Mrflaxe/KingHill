@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -31,6 +32,7 @@ public class CreationListener implements Listener {
         register(plugin);
     }
     
+    @EventHandler
     public void onBlockInterract(PlayerInteractEvent event) {
         Action action = event.getAction();
         Player player = event.getPlayer();

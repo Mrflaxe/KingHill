@@ -58,6 +58,10 @@ public class TimeCounter {
             claimedHills.put(player, hill);
         }
         
+        if(!timeData.containsKey(player)) {
+            timeData.put(player, 0);
+        }
+        
         ProfileModel profile = profileProvider.getProfile(player);
         
         if(profile.isRewardAvailable()) {
@@ -69,13 +73,37 @@ public class TimeCounter {
         activeKingTasks.put(player, plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             Location playerLocation = player.getLocation();
             
+            TimeFormatter formatter = new TimeFormatter();
             boolean isOnPlate = isOnPlate(playerLocation, plateLocation);
             
             // If player no longer king of the hill
             if(!isOnPlate) {
                 updateData(player);
+                
+                String message = messages.getColoredString("kinghill.result");
+                message = formatter.format(timeData.get(player), message);
+                player.sendMessage(message);
+                
+                Title title = new Title("");
+                player.sendTitle(title);
+                
                 timeData.remove(player);
+                claimedHills.remove(player);
                 closeTask(player);
+                
+                return;
+            }
+            
+            // If players not enough
+            List<Player> playersIn = plugin.getServer().getOnlinePlayers().stream()
+                    .filter(onlinePlayer -> hill.isInRange(onlinePlayer.getLocation()))
+                    .collect(Collectors.toList());
+            
+            int required = config.getInt("players-required");
+            
+            if(playersIn.size() < required) {
+                String formatted = messages.getFormatted("kinghill.not-enough-players", "%count%", required);
+                player.sendActionBar(formatted);
                 return;
             }
             
@@ -86,20 +114,18 @@ public class TimeCounter {
             
             // If 2 or more players at one time at the top of hill
             if(size > 1) {
-                String message = messages.get("kinghill.only-one-can");
-                Title title = new Title(message);
+                String titleMessage = messages.get("kinghill.only-one-can.title");
+                Title title = new Title(titleMessage);
+                
                 player.sendTitle(title);
+                messages.getAndSend(player, "kinghill.only-one-can.message");
                 
                 return;
             }
             
-            if(!timeData.containsKey(player)) {
-                timeData.put(player, 1);
-            } else {
-                int oldValue = timeData.get(player);
-                timeData.put(player, oldValue++);
-            }
-            
+            int newValue = timeData.get(player) + 1;
+            timeData.put(player, newValue);
+                
             if(profile.isRewardAvailable()) {
                 int req = config.getInt("daily-reward-required");
                 
@@ -115,9 +141,7 @@ public class TimeCounter {
             }
             
             String message = messages.getColoredString("kinghill.title");
-            
-            TimeFormatter formatter = new TimeFormatter();
-            formatter.format(timeData.get(player), message);
+            message = formatter.format(timeData.get(player), message);
             
             Title title = new Title(message);
             player.sendTitle(title);
@@ -158,7 +182,13 @@ public class TimeCounter {
     
     private void updateData(Player player) {
         ProfileModel profile = profileProvider.getProfile(player);
-        int time = timeData.get(player);
+        int time;
+        
+        if(!timeData.containsKey(player)) {
+            time = 0;
+        } else {
+            time = timeData.get(player);
+        }
         
         int maxTime = profile.getMaxTime();
         
@@ -185,6 +215,9 @@ public class TimeCounter {
     }
     
     private void closeTask(Player player) {
-        plugin.getServer().getScheduler().runTask(plugin, () -> activeKingTasks.get(player).cancel());
+        plugin.getServer().getScheduler().runTask(plugin, () -> {
+            activeKingTasks.get(player).cancel();
+            activeKingTasks.remove(player);
+        });
     }
 }

@@ -8,9 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @DatabaseTable(tableName = "kinghill_hills")
+@NoArgsConstructor
 public class HillModel {
     
+    @Getter
     @DatabaseField(columnName = "id", id = true)
     private String name;
     @DatabaseField(columnName = "plate_x")
@@ -36,6 +41,7 @@ public class HillModel {
     
     public HillModel(@NotNull String name, Location plate, @NotNull Location pos1, @NotNull Location pos2) {
         this.name = name;
+        this.worldName = plate.getWorld().getName();
         splitCoordinates(plate, pos1, pos2);
     }
     

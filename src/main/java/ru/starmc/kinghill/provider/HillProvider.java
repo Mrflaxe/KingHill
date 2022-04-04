@@ -52,4 +52,12 @@ public class HillProvider {
         HillModel hill = new HillModel(name, plate, pos1, pos2);
         databaseManager.saveHill(hill);
     }
+    
+    public void deleteHill(HillModel hill) {
+        databaseManager.deleteHill(hill);
+        
+        if(hills.containsValue(hill)) {
+            hills.remove(hill.getPlateLocation());
+        }
+    }
 }
