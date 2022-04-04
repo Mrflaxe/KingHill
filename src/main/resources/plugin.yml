@@ -22,3 +22,6 @@ permissions:
   kinghil.command.cancel:
     description: cancelling kinghill creation
     default: op
+  kinghill.command.reload:
+    description: reloads configurations
+    default: op

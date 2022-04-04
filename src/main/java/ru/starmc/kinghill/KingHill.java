@@ -76,7 +76,7 @@ public class KingHill extends JavaPlugin {
         }
     }
 
-    private void refreshConfigs() {
+    public void refreshConfigs() {
         if(config == null) this.config = new Configuration(this, "config.yml");
         config.refresh();
         
