@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import ru.starmc.kinghill.database.DatabaseManager;
 import ru.starmc.kinghill.database.model.ProfileModel;
+import ru.starmc.kinghill.placeholder.DataType;
 
 public class ProfileProvider {
 
@@ -69,7 +70,7 @@ public class ProfileProvider {
         profiles.values().forEach(profile -> profile.setRewardAvailable(true));
     }
     
-    public List<ProfileModel> getTop5Profiles(boolean allTime) {
+    public List<ProfileModel> getTop5Profiles(DataType type) {
         List<ProfileModel> profiles = databaseManager.getAllProfiles().join();
         List<ProfileModel> top5 = new ArrayList<>();
         
@@ -81,13 +82,17 @@ public class ProfileProvider {
             
             for (int j = i+1; j < profiles.size(); j++) {
                 
-                if(allTime) {
+                if(type == DataType.ALLTIME) {
                     if (profiles.get(j).getTime() > profiles.get(pos).getTime()) {
                         pos = j;
+                        continue;
                     }
-                } else {
+                }
+                
+                if(type == DataType.MAXTIME) {
                     if (profiles.get(j).getMaxTime() > profiles.get(pos).getMaxTime()) {
                         pos = j;
+                        continue;
                     }
                 }
 

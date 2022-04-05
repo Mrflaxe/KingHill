@@ -2,7 +2,7 @@ package ru.starmc.kinghill.placeholder;
 
 import java.util.List;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import lombok.AllArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -18,18 +18,18 @@ public class PlaceholdersHook extends PlaceholderExpansion {
     private final Configuration config;
     
     @Override
-    public String onPlaceholderRequest(Player player, String params) {
+    public String onRequest(OfflinePlayer player, String params) {
         for(int i = 1; i < 6; i++) {
-            String allTimePlacePlaceholder = "%kh_time_top" + i + "%";
-            String allTimeNamePlcaeholder = "%kh_name_top" + i + "%";
-            String maxTimePlaceholder = "%kh_maxtime_top" + i + "%";
-            String maxTimeNamePlaceholder = "%kh_maxname_top" + i + "%";
+            String allTimePlacePlaceholder = "time_top" + i;
+            String allTimeNamePlcaeholder = "name_top" + i;
+            String maxTimePlaceholder = "maxtime_top" + i;
+            String maxTimeNamePlaceholder = "maxname_top" + i;
 
-            List<ProfileModel> top5AllTime = profileProvider.getTop5Profiles(true);
-            List<ProfileModel> top5MaxTime = profileProvider.getTop5Profiles(false);
+            List<ProfileModel> top5AllTime = profileProvider.getTop5Profiles(DataType.ALLTIME);
+            List<ProfileModel> top5MaxTime = profileProvider.getTop5Profiles(DataType.MAXTIME);
             
             if(params.equalsIgnoreCase(allTimePlacePlaceholder)) {
-                ProfileModel profile = top5AllTime.get(i);
+                ProfileModel profile = top5AllTime.get(i - 1);
                 int time = profile.getTime();
                 
                 String pattern = config.getString("placeholder-time-pattern");
@@ -39,7 +39,7 @@ public class PlaceholdersHook extends PlaceholderExpansion {
             }
             
             if(params.equalsIgnoreCase(maxTimePlaceholder)) {
-                ProfileModel profile = top5MaxTime.get(i);
+                ProfileModel profile = top5MaxTime.get(i - 1);
                 int time = profile.getTime();
                 
                 String pattern = config.getString("placeholder-time-pattern");
@@ -49,12 +49,12 @@ public class PlaceholdersHook extends PlaceholderExpansion {
             }
             
             if(params.equalsIgnoreCase(allTimeNamePlcaeholder)) {
-                ProfileModel profile = top5AllTime.get(i);
+                ProfileModel profile = top5AllTime.get(i - 1);
                 return profile.getName();
             }
             
             if(params.equalsIgnoreCase(maxTimeNamePlaceholder)) {
-                ProfileModel profile = top5MaxTime.get(i);
+                ProfileModel profile = top5MaxTime.get(i - 1);
                 return profile.getName();
             }
         }
@@ -64,7 +64,7 @@ public class PlaceholdersHook extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "kinghill";
+        return "kh";
     }
 
     @Override
@@ -74,6 +74,6 @@ public class PlaceholdersHook extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0";
+        return "1.1";
     }
 }

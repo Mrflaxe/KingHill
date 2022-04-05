@@ -8,7 +8,7 @@
     </parent>
     
     <artifactId>KingHill</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     
     <name>KingHill</name>
     
@@ -22,6 +22,11 @@
         <repository>
             <id>starmc</id>
             <url>https://repo.soknight.me/repository/starmc/</url>
+        </repository>
+        <!-- HologramDisplays repo -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
     
@@ -45,6 +50,13 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
+        </dependency>
+        <!-- HologramDisplays -->
+        <dependency>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.4.9</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     

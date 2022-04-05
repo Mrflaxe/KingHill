@@ -3,7 +3,7 @@ main: ru.starmc.kinghill.KingHill
 version: ${project.version}
 author: Mrflaxe
 depend: [SKLibrary]
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, HolographicDisplays]
 api-version: 1.15
 
 commands:

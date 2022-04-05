@@ -14,6 +14,7 @@ import ru.starmc.kinghill.database.model.HillModel;
 import ru.starmc.kinghill.database.model.ProfileModel;
 import ru.starmc.kinghill.listener.CreationListener;
 import ru.starmc.kinghill.listener.KingHillListener;
+import ru.starmc.kinghill.placeholder.HolographicDisplaysPlaceholderDispatcher;
 import ru.starmc.kinghill.placeholder.PlaceholdersHook;
 import ru.starmc.kinghill.provider.HillProvider;
 import ru.starmc.kinghill.provider.ProfileProvider;
@@ -34,10 +35,6 @@ public class KingHill extends JavaPlugin {
     @Override
     public void onEnable() {
         refreshConfigs();
-        
-        if(this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholdersHook(profileProvider, config).register();
-        } //TODO log that placeholderAPI is disabled
         
         try {
             Database database = new Database(this, config)
@@ -60,6 +57,16 @@ public class KingHill extends JavaPlugin {
         this.profileProvider = new ProfileProvider(databaseManager);
         this.sessionManager = new CreationSessionManager();
         this.TimeCounter = new TimeCounter(this, messages, config, profileProvider);
+        
+        if(this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholdersHook(profileProvider, config).register();
+        } else {
+            this.getLogger().warning("PlaceholdersAPI not found. Placeholders not avialable");
+        }
+        
+        if(this.getServer().getPluginManager().getPlugin("HolographicDisplays") != null) {
+            new HolographicDisplaysPlaceholderDispatcher(config, profileProvider, this).registerPlaceholders();
+        }
         
         registerCommands();
         registerListeners();
