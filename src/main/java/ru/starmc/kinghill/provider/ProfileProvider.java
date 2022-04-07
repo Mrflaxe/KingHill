@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 
@@ -15,7 +17,7 @@ public class ProfileProvider {
 
     private final DatabaseManager databaseManager;
     
-    private final Map<String, ProfileModel> profiles; //cache
+    private final Map<String, ProfileModel> profiles;
     
     public ProfileProvider(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
@@ -59,9 +61,35 @@ public class ProfileProvider {
         return profile;
     }
     
+    public List<ProfileModel> getAllProfiles() {
+        List<ProfileModel> activeProfiles = this.profiles.entrySet().stream()
+                .map(Entry::getValue)
+                .collect(Collectors.toList());
+        
+        List<ProfileModel> profiles = databaseManager.getAllProfiles().join();
+        List<ProfileModel> totalCollection = new ArrayList<>();
+        
+        totalCollection.addAll(profiles);
+        List<String> activeProfilesNames = activeProfiles.stream()
+                .map(ProfileModel::getName)
+                .collect(Collectors.toList());
+        
+        for (ProfileModel profileModel : profiles) {
+            if(activeProfilesNames.contains(profileModel.getName())) {
+                totalCollection.remove(profileModel);
+                continue;
+            }
+        }
+        
+        totalCollection.addAll(activeProfiles);
+        
+        return totalCollection;
+    }
+    
     public ProfileModel createProfile(Player player) {
         ProfileModel newProfile = new ProfileModel(player.getName(), 0, 0, true);
         profiles.put(player.getName(), newProfile);
+        databaseManager.saveProfile(newProfile);
         
         return newProfile;
     }
@@ -71,7 +99,7 @@ public class ProfileProvider {
     }
     
     public List<ProfileModel> getTop5Profiles(DataType type) {
-        List<ProfileModel> profiles = databaseManager.getAllProfiles().join();
+        List<ProfileModel> profiles = getAllProfiles();
         List<ProfileModel> top5 = new ArrayList<>();
         
         int pos;

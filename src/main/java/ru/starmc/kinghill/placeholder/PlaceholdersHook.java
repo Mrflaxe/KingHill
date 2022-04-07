@@ -3,6 +3,7 @@ package ru.starmc.kinghill.placeholder;
 import java.util.List;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.AllArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -16,6 +17,7 @@ public class PlaceholdersHook extends PlaceholderExpansion {
 
     private final ProfileProvider profileProvider;
     private final Configuration config;
+    private final JavaPlugin plugin;
     
     @Override
     public String onRequest(OfflinePlayer player, String params) {
@@ -74,6 +76,6 @@ public class PlaceholdersHook extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.1";
+        return plugin.getDescription().getVersion();
     }
 }

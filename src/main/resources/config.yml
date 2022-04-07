@@ -49,3 +49,6 @@ holographic-displays-update-time: 1
 # Что бы указать имя игрока используйте плейсхолдер %player%
 reward:
   - "say hello %player%"
+
+# Если у плейсхолдера нет данных, то он будет выводить это:
+no-data: "---"

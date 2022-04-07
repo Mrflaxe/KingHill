@@ -25,8 +25,8 @@ public class HolographicDisplaysPlaceholderDispatcher {
         int refreshTime = config.getInt("holographic-displays-update-time", 1);
         
         for(int i = 1; i < 6; i++) {
-            NamePlaceholderReplacer allTimeNameReplacer = new NamePlaceholderReplacer(profileProvider, DataType.ALLTIME, i);
-            NamePlaceholderReplacer maxTimeNameReplacer = new NamePlaceholderReplacer(profileProvider, DataType.MAXTIME, i);
+            NamePlaceholderReplacer allTimeNameReplacer = new NamePlaceholderReplacer(config, profileProvider, DataType.ALLTIME, i);
+            NamePlaceholderReplacer maxTimeNameReplacer = new NamePlaceholderReplacer(config, profileProvider, DataType.MAXTIME, i);
             TimePlaceholderReplacer allTimeValueReplacer = new TimePlaceholderReplacer(config, profileProvider, DataType.ALLTIME, i);
             TimePlaceholderReplacer maxTimeValueReplacer = new TimePlaceholderReplacer(config, profileProvider, DataType.MAXTIME, i);
             

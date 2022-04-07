@@ -31,7 +31,6 @@ public class TimeCounter {
     private final Map<Player, Integer> timeData;
     private final Map<Player, BukkitTask> activeKingTasks;
     private final Map<Player, HillModel> claimedHills;
-    private final Map<Player, Integer> dailyTime;
     
     public TimeCounter(JavaPlugin plugin, Messages messages, Configuration config, ProfileProvider profileProvider) {
         this.plugin = plugin;
@@ -42,7 +41,6 @@ public class TimeCounter {
         this.timeData = new HashMap<>();
         this.activeKingTasks = new HashMap<>();
         this.claimedHills = new HashMap<>();
-        this.dailyTime = new HashMap<>();
         
         runDailyRewardUpdate();
     }
@@ -64,12 +62,6 @@ public class TimeCounter {
         
         ProfileModel profile = profileProvider.getProfile(player);
         
-        if(profile.isRewardAvailable()) {
-            if(!dailyTime.containsKey(player)) {
-                dailyTime.put(player, 0);
-            }
-        }
-        
         activeKingTasks.put(player, plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             Location playerLocation = player.getLocation();
             
@@ -78,7 +70,7 @@ public class TimeCounter {
             
             // If player no longer king of the hill
             if(!isOnPlate) {
-                updateData(player);
+//                updateData(player);
                 
                 String message = messages.getColoredString("kinghill.result");
                 message = formatter.format(timeData.get(player), message);
@@ -125,17 +117,14 @@ public class TimeCounter {
             
             int newValue = timeData.get(player) + 1;
             timeData.put(player, newValue);
+            profile.addTime(1);
                 
             if(profile.isRewardAvailable()) {
                 int req = config.getInt("daily-reward-required");
                 
-                int dailytime = dailyTime.get(player) + 1;
-                dailyTime.put(player, dailytime);
-                
-                if(dailytime >= req) {
+                if(newValue >= req) {
                     giveReward(player);
-                    messages.getAndSend(player, "daily-reward");
-                    dailyTime.remove(player);
+                    messages.getAndSend(player, "kinghill.daily-reward");
                     profile.setRewardAvailable(false);
                 }
             }
@@ -180,24 +169,24 @@ public class TimeCounter {
         }, seconds * 20, 24 * 60 * 60 * 20);
     }
     
-    private void updateData(Player player) {
-        ProfileModel profile = profileProvider.getProfile(player);
-        int time;
-        
-        if(!timeData.containsKey(player)) {
-            time = 0;
-        } else {
-            time = timeData.get(player);
-        }
-        
-        int maxTime = profile.getMaxTime();
-        
-        if(maxTime < time) {
-            profile.setMaxTime(time);
-        }
-        
-        profile.addTime(time);
-    }
+//    private void updateData(Player player) {
+//        ProfileModel profile = profileProvider.getProfile(player);
+//        int time;
+//
+//        if(!timeData.containsKey(player)) {
+//            time = 0;
+//        } else {
+//            time = timeData.get(player);
+//        }
+//
+//        int maxTime = profile.getMaxTime();
+//
+//        if(maxTime < time) {
+//            profile.setMaxTime(time);
+//        }
+//
+//        profile.addTime(time);
+//    }
     
     private boolean isOnPlate(Location playerLocation, Location plateLocation) {
         float minX = plateLocation.getBlockX() - 0.25f;

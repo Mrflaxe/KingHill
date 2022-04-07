@@ -22,15 +22,16 @@ public class TimePlaceholderReplacer implements PlaceholderReplacer {
     @Override
     public String update() {
         List<ProfileModel> top = profileProvider.getTop5Profiles(type);
+        String noneMessage = config.getString("no-data", "none");
         
         if(top.size() < position) {
-            return "none";
+            return noneMessage;
         }
         
         ProfileModel profile = top.get(position - 1);
         
         if(profile == null) {
-            return "none";
+            return noneMessage;
         }
         
         String pattern = config.getString("placeholder-time-pattern");

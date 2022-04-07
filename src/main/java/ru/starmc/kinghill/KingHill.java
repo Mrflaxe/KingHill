@@ -59,7 +59,7 @@ public class KingHill extends JavaPlugin {
         this.TimeCounter = new TimeCounter(this, messages, config, profileProvider);
         
         if(this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholdersHook(profileProvider, config).register();
+            new PlaceholdersHook(profileProvider, config, this).register();
         } else {
             this.getLogger().warning("PlaceholdersAPI not found. Placeholders not avialable");
         }
