@@ -70,7 +70,7 @@ public class TimeCounter {
             
             // If player no longer king of the hill
             if(!isOnPlate) {
-//                updateData(player);
+                updateData(player);
                 
                 String message = messages.getColoredString("kinghill.result");
                 message = formatter.format(timeData.get(player), message);
@@ -169,24 +169,22 @@ public class TimeCounter {
         }, seconds * 20, 24 * 60 * 60 * 20);
     }
     
-//    private void updateData(Player player) {
-//        ProfileModel profile = profileProvider.getProfile(player);
-//        int time;
-//
-//        if(!timeData.containsKey(player)) {
-//            time = 0;
-//        } else {
-//            time = timeData.get(player);
-//        }
-//
-//        int maxTime = profile.getMaxTime();
-//
-//        if(maxTime < time) {
-//            profile.setMaxTime(time);
-//        }
-//
-//        profile.addTime(time);
-//    }
+    private void updateData(Player player) {
+        ProfileModel profile = profileProvider.getProfile(player);
+        int time;
+
+        if(!timeData.containsKey(player)) {
+            time = 0;
+        } else {
+            time = timeData.get(player);
+        }
+
+        int maxTime = profile.getMaxTime();
+
+        if(maxTime < time) {
+            profile.setMaxTime(time);
+        }
+    }
     
     private boolean isOnPlate(Location playerLocation, Location plateLocation) {
         float minX = plateLocation.getBlockX() - 0.25f;

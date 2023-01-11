@@ -2,24 +2,32 @@ package ru.starmc.kinghill.placeholder.hologramDipslays;
 
 import java.util.List;
 
-import com.gmail.filoghost.holographicdisplays.api.placeholder.PlaceholderReplacer;
+import org.jetbrains.annotations.Nullable;
 
-import lombok.AllArgsConstructor;
+import me.filoghost.holographicdisplays.api.placeholder.GlobalPlaceholder;
 import ru.soknight.lib.configuration.Configuration;
 import ru.starmc.kinghill.database.model.ProfileModel;
 import ru.starmc.kinghill.placeholder.DataType;
 import ru.starmc.kinghill.provider.ProfileProvider;
 
-@AllArgsConstructor
-public class NamePlaceholderReplacer implements PlaceholderReplacer {
+public class NamePlaceholderReplacer implements GlobalPlaceholder {
 
     private final Configuration config;
     private final ProfileProvider profileProvider;
     private final DataType type;
     private final int position;
+    private final int refreshInterval;
     
+    public NamePlaceholderReplacer(Configuration config, ProfileProvider profileProvider, DataType type, int position, int refreshInterval) {
+        this.config = config;
+        this.profileProvider = profileProvider;
+        this.type = type;
+        this.position = position;
+        this.refreshInterval = refreshInterval;
+    }
+
     @Override
-    public String update() {
+    public @Nullable String getReplacement(@Nullable String arg0) {
         List<ProfileModel> top = profileProvider.getTop5Profiles(type);
         String noneMessage = config.getString("no-data", "none");
         
@@ -34,5 +42,10 @@ public class NamePlaceholderReplacer implements PlaceholderReplacer {
         }
         
         return profile.getName();
+    }
+    
+    @Override
+    public int getRefreshIntervalTicks() {
+        return refreshInterval;
     }
 }

@@ -2,8 +2,7 @@ package ru.starmc.kinghill.placeholder;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import ru.soknight.lib.configuration.Configuration;
 import ru.starmc.kinghill.placeholder.hologramDipslays.NamePlaceholderReplacer;
 import ru.starmc.kinghill.placeholder.hologramDipslays.TimePlaceholderReplacer;
@@ -13,27 +12,29 @@ public class HolographicDisplaysPlaceholderDispatcher {
     
     private final Configuration config;
     private final ProfileProvider profileProvider;
-    private final JavaPlugin plugin;
+    
+    private final HolographicDisplaysAPI holographicDisplaysAPI;
     
     public HolographicDisplaysPlaceholderDispatcher(Configuration config, ProfileProvider profileProvider, JavaPlugin plugin) {
         this.config = config;
         this.profileProvider = profileProvider;
-        this.plugin = plugin;
+        
+        this.holographicDisplaysAPI = HolographicDisplaysAPI.get(plugin);
     }
     
     public void registerPlaceholders() {
         int refreshTime = config.getInt("holographic-displays-update-time", 1);
         
         for(int i = 1; i < 6; i++) {
-            NamePlaceholderReplacer allTimeNameReplacer = new NamePlaceholderReplacer(config, profileProvider, DataType.ALLTIME, i);
-            NamePlaceholderReplacer maxTimeNameReplacer = new NamePlaceholderReplacer(config, profileProvider, DataType.MAXTIME, i);
-            TimePlaceholderReplacer allTimeValueReplacer = new TimePlaceholderReplacer(config, profileProvider, DataType.ALLTIME, i);
-            TimePlaceholderReplacer maxTimeValueReplacer = new TimePlaceholderReplacer(config, profileProvider, DataType.MAXTIME, i);
+            NamePlaceholderReplacer allTimeNameReplacer = new NamePlaceholderReplacer(config, profileProvider, DataType.ALLTIME, i, refreshTime);
+            NamePlaceholderReplacer maxTimeNameReplacer = new NamePlaceholderReplacer(config, profileProvider, DataType.MAXTIME, i, refreshTime);
+            TimePlaceholderReplacer allTimeValueReplacer = new TimePlaceholderReplacer(config, profileProvider, DataType.ALLTIME, i, refreshTime);
+            TimePlaceholderReplacer maxTimeValueReplacer = new TimePlaceholderReplacer(config, profileProvider, DataType.MAXTIME, i, refreshTime);
             
-            HologramsAPI.registerPlaceholder(plugin, "%kh_name_top" + i + "%", refreshTime, allTimeNameReplacer);
-            HologramsAPI.registerPlaceholder(plugin, "%kh_maxname_top" + i + "%", refreshTime, maxTimeNameReplacer);
-            HologramsAPI.registerPlaceholder(plugin, "%kh_time_top" + i + "%", refreshTime, allTimeValueReplacer);
-            HologramsAPI.registerPlaceholder(plugin, "%kh_maxtime_top" + i + "%", refreshTime, maxTimeValueReplacer);
+            holographicDisplaysAPI.registerGlobalPlaceholder("kh_name_top" + i, allTimeNameReplacer);
+            holographicDisplaysAPI.registerGlobalPlaceholder("kh_maxname_top" + i, maxTimeNameReplacer);
+            holographicDisplaysAPI.registerGlobalPlaceholder("kh_time_top" + i, allTimeValueReplacer);
+            holographicDisplaysAPI.registerGlobalPlaceholder("kh_maxtime_top" + i, maxTimeValueReplacer);
         }
     }
 }

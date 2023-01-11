@@ -70,6 +70,7 @@ public class ProfileProvider {
         List<ProfileModel> totalCollection = new ArrayList<>();
         
         totalCollection.addAll(profiles);
+        
         List<String> activeProfilesNames = activeProfiles.stream()
                 .map(ProfileModel::getName)
                 .collect(Collectors.toList());
